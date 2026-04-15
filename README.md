@@ -62,10 +62,10 @@ The dashboard communicates with a **FastAPI** server using the following JSON st
      
 ## 👥 Contributors
 This project was developed by:
- * **Jannatallah Mohamed** - *Engineering Student & Full-stack Developer* - https://github.com/metaxproo
- * **Jana Hazem** - *Engineering Student & AI Developer* - GitHub Profile
- * **Ola Abdelnabi** - *Engineering Student & AI Developer* - GitHub Profile
- * **Arwa Mohamed** - *Engineering Student & AI Developer* - GitHub Profile
+ * **Jannatallah Mohamed** - *Engineering Student & Full-stack Developer & AI Developer* - https://github.com/metaxproo
+ * **Jana Hazem** - *Engineering Student & AI Developer & Full-stack Developer* - GitHub Profile
+ * **Ola Abdelnabi** - *Engineering Student & AI Developer & Full-stack Developer* - GitHub Profile
+ * **Arwa Mohamed** - *Engineering Student & AI Developer & Full-stack Developer* - GitHub Profile
 ##  About the Project
 Developed as part of an engineering curriculum focusing on the integration of AI computer vision alerts with functional, user-centric web interfaces.
 ```
