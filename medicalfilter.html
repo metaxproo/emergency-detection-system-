@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AMBULANCE | FALL DETECTION</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --med-green: #00ffaa; --dark-bg: #050a05; }
+        body { background: var(--dark-bg); color: white; font-family: 'Orbitron'; margin: 0; }
+        .emergency-active { animation: pulse-green 1s infinite; }
+        @keyframes pulse-green { 
+            0% { background-color: #050a05; }
+            50% { background-color: #002b1c; }
+            100% { background-color: #050a05; }
+        }
+        #map { height: 75vh; width: 100%; border-bottom: 3px solid var(--med-green); }
+        .footer-info { padding: 15px; background: #000; display: flex; height: 25vh; }
+        .log-box { flex: 2; border: 1px solid #004d33; padding: 10px; overflow-y: auto; color: var(--med-green); font-family: monospace; }
+        .status-box { flex: 1; text-align: center; border-left: 2px solid var(--med-green); padding: 10px; }
+        .alert-banner { background: var(--med-green); color: black; padding: 10px; display: none; text-align: center; font-weight: 900; }
+		 /* Dark Map Filters */
+        .leaflet-tile-container {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        .leaflet-tile {
+            filter: brightness(1.2) saturate(1.5);
+        }
+
+    </style>
+</head>
+<body id="med-body">
+    <div id="alert-banner" class="alert-banner">🚑 MEDICAL EMERGENCY: FALL DETECTED 🚑</div>
+    <div id="map"></div>
+    <div class="footer-info">
+        <div class="log-box" id="log-list"><div>[SYSTEM] Monitoring Medical Feed...</div></div>
+        <div class="status-box">
+            <h2 id="status-text" style="color: var(--med-green);">UNITS READY</h2>
+            <p id="sync-time">Last Sync: --:--</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([30.0444, 31.2357], 14);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        var marker = L.marker([30.0444, 31.2357]).addTo(map);
+        var lastID = null;
+
+        setInterval(() => {
+            fetch('https://mutular-julianna-coronally.ngrok-free.dev/get-last-incident', {
+                headers: { "ngrok-skip-browser-warning": "true" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('sync-time').innerText = "Last Sync: " + new Date().toLocaleTimeString();
+                
+                // بتسمع للوقوع أو طلبات الإسعاف
+                if(data.id && data.id !== lastID && (data.type.toUpperCase().includes("FALL") || data.type.toUpperCase().includes("MEDICAL"))) {
+                    lastID = data.id;
+                    handleMedAlert(data);
+                }
+            });
+        }, 3000);
+
+        function handleMedAlert(data) {
+            new Audio('https://www.soundjay.com/buttons/beep-01a.mp3').play();
+            document.getElementById('med-body').classList.add('emergency-active');
+            document.getElementById('alert-banner').style.display = 'block';
+            document.getElementById('status-text').innerText = "🚑 EN ROUTE";
+            
+            var pos = [data.lat, data.lng];
+            marker.setLatLng(pos).bindPopup(`<b>MEDICAL ALERT</b><br>Type: ${data.type}`).openPopup();
+            map.flyTo(pos, 16);
+
+            document.getElementById('log-list').innerHTML = `<div>[${new Date().toLocaleTimeString()}] FALL DETECTED - ID: ${data.id}</div>` + document.getElementById('log-list').innerHTML;
+        }
+    </script>
+</body>
+</html>

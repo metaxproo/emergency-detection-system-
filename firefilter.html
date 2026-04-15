@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FIRE STATION | EMERGENCY RECEIVER</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --emergency-red: #ff0000; --dark-bg: #050505; }
+        body { background: var(--dark-bg); color: white; font-family: 'Orbitron'; margin: 0; overflow: hidden; }
+        
+        /* تأثير الخطر عند استقبال بلاغ */
+        .emergency-active { animation: pulse-bg 1s infinite; }
+        @keyframes pulse-bg { 
+            0% { background-color: #050505; }
+            50% { background-color: #2a0000; }
+            100% { background-color: #050505; }
+        }
+
+        #map { height: 70vh; width: 100%; border-bottom: 3px solid var(--emergency-red); }
+        .info-panel { padding: 20px; display: flex; justify-content: space-between; background: #111; height: 30vh; }
+        .log-box { flex: 1; overflow-y: auto; border: 1px solid #333; padding: 10px; font-family: monospace; font-size: 12px; }
+        .status-indicator { width: 300px; text-align: center; border-left: 2px solid var(--emergency-red); }
+        .alert-banner { background: var(--emergency-red); color: white; padding: 10px; display: none; text-align: center; font-weight: 900; }
+		 /* Dark Map Filters */
+        .leaflet-tile-container {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        .leaflet-tile {
+            filter: brightness(1.2) saturate(1.5);
+        }
+
+	</style>
+</head>
+<body id="main-body">
+
+    <div id="alert-banner" class="alert-banner">🚨 IMMEDIATE FIRE DISPATCH - CHECK MAP 🚨</div>
+    <div id="map"></div>
+
+    <div class="info-panel">
+        <div class="log-box" id="fire-logs">
+            <h3 style="color: var(--emergency-red)">STATION ACTIVITY LOG</h3>
+            <div id="log-list"></div>
+        </div>
+        <div class="status-indicator">
+            <h3>STATION STATUS</h3>
+            <h2 id="status-text" style="color: #00ff00;">IDLE / READY</h2>
+            <p id="last-update">Last Sync: --:--</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([30.0444, 31.2357], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        var marker = L.marker([30.0444, 31.2357]).addTo(map);
+        
+        var lastID = null;
+
+        function triggerAlarm(data) {
+            // 1. تشغيل الصوت
+            new Audio('https://www.soundjay.com/buttons/beep-01a.mp3').play();
+            
+            // 2. تفعيل الأنوار الحمراء في الصفحة
+            document.getElementById('main-body').classList.add('emergency-active');
+            document.getElementById('alert-banner').style.display = 'block';
+            document.getElementById('status-text').innerText = "🚨 EN ROUTE";
+            document.getElementById('status-text').style.color = "red";
+
+            // 3. تحديث الخريطة
+            var pos = [data.lat, data.lng];
+            marker.setLatLng(pos).bindPopup(`<b>FIRE ALERT</b><br>Source: ${data.source}`).openPopup();
+            map.flyTo(pos, 15);
+
+            // 4. إضافة للـ Log
+            var logLine = `<div>[${new Date().toLocaleTimeString()}] ALERT #${data.id} - TYPE: ${data.type}</div>`;
+            document.getElementById('log-list').innerHTML = logLine + document.getElementById('log-list').innerHTML;
+
+            // إيقاف التنبيه بعد 10 ثواني (اختياري)
+            setTimeout(() => {
+                document.getElementById('main-body').classList.remove('emergency-active');
+            }, 10000);
+        }
+
+        // الـ Polling اللي بيراقب الـ API
+        setInterval(() => {
+            fetch('https://mutular-julianna-coronally.ngrok-free.dev/get-last-incident', {
+                headers: { "ngrok-skip-browser-warning": "true" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('last-update').innerText = "Last Sync: " + new Date().toLocaleTimeString();
+                
+                // الشرط ده هو "المخ" بتاع الصفحة:
+                // هيشتغل لو الـ ID جديد (سواء جاي من الكاميرا أو من زرار الـ Admin)
+                // وكمان لازم يكون النوع فيه كلمة "FIRE"
+                if(data.id && data.id !== lastID && data.type.toUpperCase().includes("FIRE")) {
+                    lastID = data.id;
+                    triggerAlarm(data);
+                }
+            })
+            .catch(err => console.log("Connection lost..."));
+        }, 3000);
+    </script>
+</body>
+</html>

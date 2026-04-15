@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>POLICE UNIT | WEAPON DETECTION</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --police-blue: #0055ff; --dark-bg: #02060f; }
+        body { background: var(--dark-bg); color: white; font-family: 'Orbitron'; margin: 0; overflow: hidden; }
+        .emergency-active { animation: pulse-blue 0.8s infinite; }
+        @keyframes pulse-blue { 
+            0% { background-color: #02060f; }
+            50% { background-color: #001a4d; }
+            100% { background-color: #02060f; }
+        }
+        #map { height: 75vh; width: 100%; border-bottom: 3px solid var(--police-blue); }
+        .footer-info { padding: 15px; background: #0a0a0a; display: flex; height: 25vh; }
+        .log-box { flex: 2; border: 1px solid #1a3a5a; padding: 10px; overflow-y: auto; font-family: monospace; color: #00f3ff; }
+        .status-box { flex: 1; text-align: center; border-left: 2px solid var(--police-blue); padding: 10px; }
+        .alert-banner { background: var(--police-blue); color: white; padding: 10px; display: none; text-align: center; font-weight: 900; letter-spacing: 2px; }
+		 /* Dark Map Filters */
+        .leaflet-tile-container {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        .leaflet-tile {
+            filter: brightness(1.2) saturate(1.5);
+        }
+
+  </style>
+</head>
+<body id="police-body">
+    <div id="alert-banner" class="alert-banner">🚨 CRITICAL ALERT: WEAPON DETECTED 🚨</div>
+    <div id="map"></div>
+    <div class="footer-info">
+        <div class="log-box" id="log-list"><div>[SYSTEM] Awaiting Secure Link...</div></div>
+        <div class="status-box">
+            <h2 id="status-text" style="color: #00f3ff;">PATROL READY</h2>
+            <p id="sync-time">Last Sync: --:--</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([30.0444, 31.2357], 14);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        var marker = L.marker([30.0444, 31.2357]).addTo(map);
+        var lastID = null;
+
+        setInterval(() => {
+            fetch('https://mutular-julianna-coronally.ngrok-free.dev/get-last-incident', {
+                headers: { "ngrok-skip-browser-warning": "true" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('sync-time').innerText = "Last Sync: " + new Date().toLocaleTimeString();
+                
+                // بتسمع للأسلحة أو طلبات الشرطة
+                if(data.id && data.id !== lastID && (data.type.toUpperCase().includes("WEAPON") || data.type.toUpperCase().includes("POLICE"))) {
+                    lastID = data.id;
+                    handlePoliceAlert(data);
+                }
+            });
+        }, 3000);
+
+        function handlePoliceAlert(data) {
+            new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
+            document.getElementById('police-body').classList.add('emergency-active');
+            document.getElementById('alert-banner').style.display = 'block';
+            document.getElementById('status-text').innerText = "🚨 RESPONDING";
+            
+            var pos = [data.lat, data.lng];
+            marker.setLatLng(pos).bindPopup(`<b>WEAPON ALERT</b><br>ID: ${data.id}`).openPopup();
+            map.flyTo(pos, 16);
+
+            document.getElementById('log-list').innerHTML = `<div>[${new Date().toLocaleTimeString()}] ALERT: ${data.type} @ ${data.lat}, ${data.lng}</div>` + document.getElementById('log-list').innerHTML;
+        }
+    </script>
+</body>
+</html>
