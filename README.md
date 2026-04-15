@@ -47,7 +47,7 @@ The dashboard communicates with a **FastAPI** server using the following JSON st
 }
 
 ```
-## 🚀 Installation & Setup
+##  Installation & Setup
  1. **Clone the Repository:**
    ```bash
    git clone [https://github.com/YourUsername/eds-command-center.git](https://github.com/YourUsername/eds-command-center.git)
