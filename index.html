@@ -14,164 +14,106 @@
             --metal-shine: linear-gradient(180deg, #ffffff 0%, #a8abb1 50%, #636b75 100%);
         }
 
-        /* منع الـ Body من الـ Scrolling عشان الـ Dashboard تكون ثابتة */
         body { 
             background-color: var(--navy-bg); color: #e0e0e0; font-family: 'Orbitron', sans-serif; 
             margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
 
         header {
-            background: rgba(10, 25, 47, 0.9); padding: 15px; text-align: center;
+            background: rgba(10, 25, 47, 0.9); padding: 10px; text-align: center;
             border-bottom: 2px solid #1a3a5a; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            flex-shrink: 0;
         }
 
         .metallic-text {
             background: var(--metal-shine); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 2px; margin: 0;
+            -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px; margin: 0;
         }
 
-        /* تظبيط الـ Container الأساسي */
+        /* حاوية الداشبورد - جنب بعض دائماً */
         .dashboard-container { 
-            display: flex; flex: 1; padding: 20px; gap: 20px; overflow: hidden; box-sizing: border-box;
+            display: flex; flex-direction: row; flex: 1; padding: 10px; gap: 10px; 
+            overflow: hidden; box-sizing: border-box; width: 100%;
         }
 
-        #map { flex: 2; border-radius: 15px; border: 2px solid #1a3a5a; box-shadow: inset 0 0 20px #000; cursor: crosshair; }
+        /* الخريطة تاخد مساحة أكبر شوية */
+        #map { 
+            flex: 0 0 60%; /* 60% من العرض */
+            border-radius: 10px; border: 1px solid #1a3a5a; 
+            box-shadow: inset 0 0 15px #000; cursor: crosshair;
+        }
 
-        /* تظبيط السايدبار عشان الكلام ميخرجش */
+        /* السايدبار جنبها */
         .sidebar {
-            flex: 1; min-width: 320px; max-width: 400px;
-            background: var(--navy-panel); border-radius: 15px; border: 1px solid #1a3a5a;
-            display: flex; flex-direction: column; padding: 20px; overflow-y: auto; box-sizing: border-box;
+            flex: 0 0 40%; /* 40% من العرض */
+            background: var(--navy-panel); border-radius: 10px; border: 1px solid #1a3a5a;
+            display: flex; flex-direction: column; padding: 10px; overflow-y: auto; 
+            box-sizing: border-box; min-width: 0; /* بيمنع السايدبار إنه يزق الخريطة */
         }
 
         .data-card {
-            background: #112240; border-radius: 10px; padding: 15px; margin-bottom: 15px;
-            border-left: 4px solid var(--accent-cyan); box-sizing: border-box; word-wrap: break-word;
+            background: #112240; border-radius: 8px; padding: 10px; margin-bottom: 10px;
+            border-left: 3px solid var(--accent-cyan); box-sizing: border-box; word-wrap: break-word;
         }
 
         .log-list {
-            flex-grow: 1; background: #020c1b; border-radius: 8px; padding: 10px;
-            font-family: monospace; font-size: 11px; overflow-y: auto; color: #8892b0;
-            border: 1px solid #1a3a5a; margin: 10px 0; min-height: 120px; line-height: 1.4;
+            flex-grow: 1; background: #020c1b; border-radius: 5px; padding: 8px;
+            font-family: monospace; font-size: 10px; overflow-y: auto; color: #8892b0;
+            border: 1px solid #1a3a5a; margin: 5px 0; min-height: 80px; line-height: 1.3;
         }
 
-        .button-group { display: flex; flex-direction: column; gap: 8px; }
+        .button-group { display: flex; flex-direction: column; gap: 5px; }
 
         .nav-btn {
             background: rgba(0, 243, 255, 0.05); color: var(--accent-cyan); border: 1px solid var(--accent-cyan);
-            padding: 10px; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: bold; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase; border-radius: 5px;
+            padding: 8px; font-family: 'Orbitron'; font-size: 0.6rem; font-weight: bold; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase; border-radius: 4px; width: 100%;
         }
 
-        .nav-btn:hover { background: var(--accent-cyan); color: var(--navy-bg); box-shadow: 0 0 15px var(--accent-cyan); }
+        .nav-btn:hover { background: var(--accent-cyan); color: var(--navy-bg); }
 
         #toast {
             position: fixed; bottom: 20px; right: 20px; background: #112240; color: var(--accent-cyan);
-            padding: 15px; border: 1px solid var(--accent-cyan); border-radius: 8px; display: none; z-index: 1000;
+            padding: 10px; border: 1px solid var(--accent-cyan); border-radius: 5px; display: none; z-index: 1000; font-size: 12px;
+        }
+
+        /* تعديلات الموبايل الإضافية لضمان عدم خروج أي نص */
+        @media (max-width: 600px) {
+            .metallic-text { font-size: 0.8rem; }
+            h3.metallic-text { font-size: 0.6rem !important; }
+            #alert-type { font-size: 0.65rem !important; }
+            #alert-coords { font-size: 0.55rem !important; }
+            .dashboard-container { padding: 5px; gap: 5px; }
+            .sidebar { padding: 8px; }
+            .data-card { padding: 8px; }
         }
     </style>
 </head>
 <body>
 
-<header><h1 class="metallic-text">EDS | MASTER COMMAND INTERFACE</h1></header>
+<header><h1 class="metallic-text">EDS | COMMAND INTERFACE</h1></header>
 
 <div class="dashboard-container">
     <div id="map"></div>
+    
     <div class="sidebar">
-        <h3 class="metallic-text" style="font-size: 0.9rem;">System Feed</h3>
+        <h3 class="metallic-text" style="font-size: 0.7rem; margin-bottom: 5px;">System Feed</h3>
         <div class="data-card">
-            <div id="alert-id" style="font-size: 10px; color: var(--accent-cyan);">ID: WAITING...</div>
-            <h4 id="alert-type" style="color: #ffb347; margin: 5px 0;">READY FOR SIGNAL</h4>
-            <div id="alert-coords" style="font-size: 0.75rem; color: #8892b0;">Lat: -- | Lng: --</div>
+            <div id="alert-id" style="font-size: 9px; color: var(--accent-cyan);">ID: WAITING...</div>
+            <h4 id="alert-type" style="color: #ffb347; margin: 4px 0; font-size: 0.8rem;">READY</h4>
+            <div id="alert-coords" style="font-size: 0.6rem; color: #8892b0;">Lat: -- | Lng: --</div>
         </div>
 
-        <h3 class="metallic-text" style="font-size: 0.8rem;">Activity Log</h3>
+        <h3 class="metallic-text" style="font-size: 0.7rem;">Activity Log</h3>
         <div id="log" class="log-list"></div>
         
-        <h3 class="metallic-text" style="font-size: 0.8rem; margin-top: 10px;">Authority Dispatch</h3>
+        <h3 class="metallic-text" style="font-size: 0.7rem; margin-top: 5px;">Dispatch</h3>
         <div class="button-group">
-            <button class="nav-btn" onclick="masterDispatch('WEAPON', 'Police')">Alert Police</button>
-            <button class="nav-btn" onclick="masterDispatch('FALL', 'Medical')">Alert Ambulance</button>
-            <button class="nav-btn" onclick="masterDispatch('FIRE', 'Fire')">Alert Firefighters</button>
+            <button class="nav-btn" onclick="masterDispatch('WEAPON', 'Police')">Police</button>
+            <button class="nav-btn" onclick="masterDispatch('FALL', 'Medical')">Ambulance</button>
+            <button class="nav-btn" onclick="masterDispatch('FIRE', 'Fire')">Fire</button>
         </div>
     </div>
 </div>
 
 <div id="toast"></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    var lastLat = 30.0444, lastLng = 31.2357, lastID = null;
-    var map = L.map('map').setView([lastLat, lastLng], 13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-    var marker = L.marker([lastLat, lastLng]).addTo(map);
-
-    map.on('click', e => {
-        lastLat = e.latlng.lat; lastLng = e.latlng.lng;
-        marker.setLatLng(e.latlng);
-        showToast("Location Updated Manually");
-    });
-
-    setInterval(() => {
-        fetch('https://mutular-julianna-coronally.ngrok-free.dev/get-last-incident', { 
-            headers: { "ngrok-skip-browser-warning": "true" } 
-        })
-        .then(res => res.json()).then(data => {
-            if(data.id && data.id !== lastID) {
-                lastID = data.id; lastLat = data.lat; lastLng = data.lng;
-                document.getElementById('alert-id').innerText = "ID: #" + data.id;
-                document.getElementById('alert-type').innerText = data.type.toUpperCase() + " DETECTED";
-                document.getElementById('alert-coords').innerText = `Lat: ${data.lat.toFixed(4)} | Lng: ${data.lng.toFixed(4)}`;
-                marker.setLatLng([data.lat, data.lng]); 
-                map.panTo([data.lat, data.lng]);
-                addLog(`Colab Update: ${data.type} detected`);
-            }
-        }).catch(() => {});
-    }, 3000);
-
-    async function masterDispatch(type, auth) {
-        new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play().catch(()=>{});
-        
-        const payload = {
-            id: parseFloat((Math.random() * 10).toFixed(1)),
-            type: type.toLowerCase(),
-            lat: lastLat, 
-            lng: lastLng,
-            source: "Admin_manual",
-            confidence: 1.0,
-            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' ')
-        };
-
-        try {
-            const response = await fetch('https://mutular-julianna-coronally.ngrok-free.dev/new-incident', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                showToast(`Success! Alert sent to ${auth}`);
-                addLog(`Registered: ${type} at current location`);
-            } else {
-                showToast("Server Error");
-            }
-        } catch (e) {
-            showToast("Ngrok Connection Failed!");
-        }
-    }
-
-    function addLog(m) {
-        const l = document.getElementById('log');
-        const time = new Date().toLocaleTimeString();
-        l.innerHTML = `<div>[${time}] ${m}</div>` + l.innerHTML;
-    }
-
-    function showToast(m) {
-        const t = document.getElementById('toast'); 
-        t.innerText = m; 
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-</script>
-</body>
-</html>
