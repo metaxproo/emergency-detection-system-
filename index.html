@@ -14,6 +14,7 @@
             --metal-shine: linear-gradient(180deg, #ffffff 0%, #a8abb1 50%, #636b75 100%);
         }
 
+        /* منع الـ Body من الـ Scrolling عشان الـ Dashboard تكون ثابتة */
         body { 
             background-color: var(--navy-bg); color: #e0e0e0; font-family: 'Orbitron', sans-serif; 
             margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
@@ -29,54 +30,40 @@
             -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 2px; margin: 0;
         }
 
-        .dashboard-container { display: flex; flex: 1; padding: 20px; gap: 20px; overflow: hidden; }
+        /* تظبيط الـ Container الأساسي */
+        .dashboard-container { 
+            display: flex; flex: 1; padding: 20px; gap: 20px; overflow: hidden; box-sizing: border-box;
+        }
 
         #map { flex: 2; border-radius: 15px; border: 2px solid #1a3a5a; box-shadow: inset 0 0 20px #000; cursor: crosshair; }
 
-    /* Dark Map Filters */
-        .leaflet-tile-container {
-            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-        }
-
-        .leaflet-tile {
-            filter: brightness(1.2) saturate(1.5);
-        }
-
-
+        /* تظبيط السايدبار عشان الكلام ميخرجش */
         .sidebar {
-            flex: 1; background: var(--navy-panel); border-radius: 15px; border: 1px solid #1a3a5a;
-            display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
+            flex: 1; min-width: 320px; max-width: 400px;
+            background: var(--navy-panel); border-radius: 15px; border: 1px solid #1a3a5a;
+            display: flex; flex-direction: column; padding: 20px; overflow-y: auto; box-sizing: border-box;
         }
 
-       .data-card {
-    background: #112240;
-    border-radius: 10px;
-    padding: 20px; /* زودنا المسافة الداخلية */
-    margin-bottom: 15px;
-    border-left: 4px solid var(--accent-cyan);
-    box-sizing: border-box; /* بيمنع الصندوق إنه يكبر ويخرج بره السايدبار */
-    word-wrap: break-word; /* بيجبر الكلام الطويل ينزل سطر جديد */
-    overflow: hidden; /* بيقص أي حاجة زيادة بالخطأ */
-}
-
-        .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-
-        .nav-btn {
-            background: rgba(0, 243, 255, 0.05); color: var(--accent-cyan); border: 1px solid var(--accent-cyan);
-            padding: 12px; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: bold; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase; border-radius: 5px;
+        .data-card {
+            background: #112240; border-radius: 10px; padding: 15px; margin-bottom: 15px;
+            border-left: 4px solid var(--accent-cyan); box-sizing: border-box; word-wrap: break-word;
         }
-
-        .nav-btn:hover { background: var(--accent-cyan); color: var(--navy-bg); box-shadow: 0 0 15px var(--accent-cyan); }
-
-        .panic-btn { border-color: #ff3e3e; color: #ff3e3e; margin-top: 10px; }
-        .panic-btn:hover { background: #ff3e3e; color: white; box-shadow: 0 0 20px #ff3e3e; }
 
         .log-list {
             flex-grow: 1; background: #020c1b; border-radius: 8px; padding: 10px;
             font-family: monospace; font-size: 11px; overflow-y: auto; color: #8892b0;
-            border: 1px solid #1a3a5a; margin-top: 10px; min-height: 100px;
+            border: 1px solid #1a3a5a; margin: 10px 0; min-height: 120px; line-height: 1.4;
         }
+
+        .button-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .nav-btn {
+            background: rgba(0, 243, 255, 0.05); color: var(--accent-cyan); border: 1px solid var(--accent-cyan);
+            padding: 10px; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: bold; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase; border-radius: 5px;
+        }
+
+        .nav-btn:hover { background: var(--accent-cyan); color: var(--navy-bg); box-shadow: 0 0 15px var(--accent-cyan); }
 
         #toast {
             position: fixed; bottom: 20px; right: 20px; background: #112240; color: var(--accent-cyan);
@@ -91,22 +78,22 @@
 <div class="dashboard-container">
     <div id="map"></div>
     <div class="sidebar">
-        <h3 class="metallic-text" style="font-size: 1rem;">System Feed</h3>
+        <h3 class="metallic-text" style="font-size: 0.9rem;">System Feed</h3>
         <div class="data-card">
             <div id="alert-id" style="font-size: 10px; color: var(--accent-cyan);">ID: WAITING...</div>
             <h4 id="alert-type" style="color: #ffb347; margin: 5px 0;">READY FOR SIGNAL</h4>
             <div id="alert-coords" style="font-size: 0.75rem; color: #8892b0;">Lat: -- | Lng: --</div>
         </div>
-         <h3 class="metallic-text" style="font-size: 0.8rem; margin-top: 40px;">Activity Log</h3>
+
+        <h3 class="metallic-text" style="font-size: 0.8rem;">Activity Log</h3>
         <div id="log" class="log-list"></div>
-		
-        <h3 class="metallic-text" style="font-size: 0.9rem;">Authority Dispatch</h3>
+        
+        <h3 class="metallic-text" style="font-size: 0.8rem; margin-top: 10px;">Authority Dispatch</h3>
         <div class="button-group">
             <button class="nav-btn" onclick="masterDispatch('WEAPON', 'Police')">Alert Police</button>
             <button class="nav-btn" onclick="masterDispatch('FALL', 'Medical')">Alert Ambulance</button>
             <button class="nav-btn" onclick="masterDispatch('FIRE', 'Fire')">Alert Firefighters</button>
-           
-       
+        </div>
     </div>
 </div>
 
@@ -119,14 +106,12 @@
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
     var marker = L.marker([lastLat, lastLng]).addTo(map);
 
-    // تحديث الموقع يدوياً عند الضغط على الخريطة
     map.on('click', e => {
         lastLat = e.latlng.lat; lastLng = e.latlng.lng;
         marker.setLatLng(e.latlng);
         showToast("Location Updated Manually");
     });
 
-    // سحب البيانات من Google Colab (FastAPI)
     setInterval(() => {
         fetch('https://mutular-julianna-coronally.ngrok-free.dev/get-last-incident', { 
             headers: { "ngrok-skip-browser-warning": "true" } 
@@ -135,7 +120,7 @@
             if(data.id && data.id !== lastID) {
                 lastID = data.id; lastLat = data.lat; lastLng = data.lng;
                 document.getElementById('alert-id').innerText = "ID: #" + data.id;
-                document.getElementById('alert-type').innerText = data.type + " DETECTED";
+                document.getElementById('alert-type').innerText = data.type.toUpperCase() + " DETECTED";
                 document.getElementById('alert-coords').innerText = `Lat: ${data.lat.toFixed(4)} | Lng: ${data.lng.toFixed(4)}`;
                 marker.setLatLng([data.lat, data.lng]); 
                 map.panTo([data.lat, data.lng]);
@@ -144,55 +129,47 @@
         }).catch(() => {});
     }, 3000);
 
-    // إرسال Alert جديد للـ Colab بآخر Location
-   async function masterDispatch(type, auth) {
-        new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
+    async function masterDispatch(type, auth) {
+        new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play().catch(()=>{});
         
-        // تجهيز البيانات بناءً على شكل الجدول اللي في الصورة عندك
         const payload = {
-            id: parseFloat((Math.random() * 10).toFixed(1)), // عملته float زي ما ظاهر عندك 4.0
-            type: type.toLowerCase(), // weapons, fall, fire زي ما مكتوب في الجدول
+            id: parseFloat((Math.random() * 10).toFixed(1)),
+            type: type.toLowerCase(),
             lat: lastLat, 
             lng: lastLng,
-            source: "Admin_manual", // عشان تعرفي إن ده جاي من الداشبورد
+            source: "Admin_manual",
             confidence: 1.0,
-            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' ') // فورمايت الوقت اللي الداتا بيز بتحبه
+            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
-
-        console.log("Sending Payload:", payload); // افتحي الـ Console (F12) عشان تشوفي الداتا وهي بتتبعت
 
         try {
             const response = await fetch('https://mutular-julianna-coronally.ngrok-free.dev/new-incident', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'accept': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
-                const result = await response.json();
                 showToast(`Success! Alert sent to ${auth}`);
                 addLog(`Registered: ${type} at current location`);
             } else {
-                const errorData = await response.text();
-                console.error("Server Error:", errorData);
-                showToast("Server rejected the request");
+                showToast("Server Error");
             }
         } catch (e) {
-            console.error("Fetch Error:", e);
-            showToast("Ngrok is Offline or Link Changed!");
+            showToast("Ngrok Connection Failed!");
         }
     }
 
     function addLog(m) {
         const l = document.getElementById('log');
-        l.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${m}</div>` + l.innerHTML;
+        const time = new Date().toLocaleTimeString();
+        l.innerHTML = `<div>[${time}] ${m}</div>` + l.innerHTML;
     }
 
     function showToast(m) {
-        const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
+        const t = document.getElementById('toast'); 
+        t.innerText = m; 
+        t.style.display = 'block';
         setTimeout(() => t.style.display = 'none', 3000);
     }
 </script>
