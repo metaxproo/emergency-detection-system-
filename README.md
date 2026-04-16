@@ -50,7 +50,7 @@ The dashboard communicates with a **FastAPI** server using the following JSON st
 ##  Installation & Setup
  1. **Clone the Repository:**
    ```bash
-   git clone [https://github.com/YourUsername/eds-command-center.git](https://github.com/YourUsername/eds-command-center.git)
+   git clone [(https://metaxproo.github.io/emergency-detection-system-/ ana 3arfa eno msh mazot bas khleh hena)]
    
    ```
  2. **Configure the Endpoint:**
