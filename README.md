@@ -65,7 +65,7 @@ This project was developed by:
  * **Jannatallah Mohamed** - *Engineering Student & Full-stack Developer & AI Developer* - https://github.com/metaxproo
  * **Jana Hazem** - *Engineering Student & AI Developer & Full-stack Developer* - https://github.com/janahazem890-lgtm
  * **Ola Abdelnabi** - *Engineering Student & AI Developer & Full-stack Developer*  -https://github.com/olaabdelnabi
- * **Arwa Mohamed** - *Engineering Student & AI Developer & Full-stack Developer* - GitHub Profile
+ * **Arwa Mohamed** - *Engineering Student & AI Developer & Full-stack Developer* -https://github.com/arwa63/arwa63
 ##  About the Project
 Developed as part of an engineering curriculum focusing on the integration of AI computer vision alerts with functional, user-centric web interfaces.
 ```
