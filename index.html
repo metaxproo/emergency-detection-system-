@@ -48,10 +48,16 @@
             display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
         }
 
-        .data-card {
-            background: #112240; border-radius: 10px; padding: 15px; margin-bottom: 15px;
-            border-left: 4px solid var(--accent-cyan);
-        }
+       .data-card {
+    background: #112240;
+    border-radius: 10px;
+    padding: 20px; /* زودنا المسافة الداخلية */
+    margin-bottom: 15px;
+    border-left: 4px solid var(--accent-cyan);
+    box-sizing: border-box; /* بيمنع الصندوق إنه يكبر ويخرج بره السايدبار */
+    word-wrap: break-word; /* بيجبر الكلام الطويل ينزل سطر جديد */
+    overflow: hidden; /* بيقص أي حاجة زيادة بالخطأ */
+}
 
         .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 
@@ -165,33 +171,6 @@
                 body: JSON.stringify(payload)
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                showToast(`Success! Alert sent to ${auth}`);
-                addLog(`Registered: ${type} at current location`);
-            } else {
-                const errorData = await response.text();
-                console.error("Server Error:", errorData);
-                showToast("Server rejected the request");
-            }
-        } catch (e) {
-            console.error("Fetch Error:", e);
-            showToast("Ngrok is Offline or Link Changed!");
-        }
-    }
-
-    function addLog(m) {
-        const l = document.getElementById('log');
-        l.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${m}</div>` + l.innerHTML;
-    }
-
-    function showToast(m) {
-        const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-</script>
-</body>
-</html>
             if (response.ok) {
                 const result = await response.json();
                 showToast(`Success! Alert sent to ${auth}`);
